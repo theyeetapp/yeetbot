@@ -1,0 +1,6 @@
+, I am Yeetbot, deliverer of financial market prices. I am here to help you keep track of your stock and cryptocurrecy
+portfolios. Every night at 8:00 PM GMT +1, I will message you with the trading prices of stocks and cryptocurrencies
+you are subscribed to on the Yeet platform. To find out more about me and the services I provide, visit <a href='{0}'>{1}</a>. Note also that
+for me to be of service to you, you need to have an account on the Yeet platform. Create one <a href='{2}'>here</a>.
+With all that out of the way, here is a list of my commands, enter one and we can take it from there. Its been 
+really nice meeting you.

@@ -18,8 +18,13 @@ def set():
 def get():
     bot_token = os.environ.get('BOT_TOKEN')
     app_url = os.environ.get('APP_URL')
+    mail_base_url = os.environ.get('MAIL_BASE_URL')
+    mail_api_key = os.environ.get('MAIL_API_KEY')
+    mail_from = os.environ.get('MAIL_FROM')
+    mail_from_url = os.environ.get('MAIL_FROM_URL')
 
-    return {"bot_token":bot_token, "app_url":app_url, "db":mydb};
+    return {"bot_token":bot_token, "app_url":app_url, "mail_base_url":mail_base_url, "mail_api_key":mail_api_key, "mail_from":mail_from,
+    "mail_from_url":mail_from_url, "db":mydb};
 
 
 

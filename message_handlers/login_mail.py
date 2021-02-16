@@ -1,6 +1,10 @@
-from random import randint
+from utilities.mail import verify
+from random import randint, sample
 import config
+import os.path as path
 import re
+import json
+import string
 
 def login_mail(update, context):
     chat_id = str(update.effective_chat.id)
@@ -21,3 +25,20 @@ def login_mail(update, context):
 
     if user is None:
         return context.bot.send_message(chat_id=chat_id, text=text)
+    
+    characters = string.ascii_letters + string.digits
+    code = ''.join(sample(characters, 10))
+    verify(user, code)
+
+    verify_path = path.join(config.root, 'data', 'verify.json')
+    with open(verify_path, 'r') as reader:
+        data = json.load(reader)
+    
+    data[chat_id] = code
+
+    with open(verify_path, 'w') as writer:
+        json.dump(data, writer)
+
+    text = 'I just sent you an email. Follow the instructions there to complete this process.'
+
+    return context.bot.send_message(chat_id=chat_id, text=text)

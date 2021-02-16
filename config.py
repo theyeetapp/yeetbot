@@ -11,7 +11,7 @@ def get():
     bot_token = os.environ.get('BOT_TOKEN')
     app_url = os.environ.get('APP_URL')
 
-    return (bot_token, app_url)
+    return {"bot_token":bot_token, "app_url":app_url};
 
 
 

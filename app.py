@@ -10,7 +10,7 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
 # loading up all relevant variables into environment
 config.set()
 
-bot_token = config.get()[0]
+bot_token = config.get()['bot_token']
 updater = Updater(token=bot_token, use_context=True)
 dispatcher = updater.dispatcher
 

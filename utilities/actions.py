@@ -7,11 +7,7 @@ def record(chat_id, action):
     with open(action_path, 'r') as reader:
         actions = json.load(reader)
 
-    if actions[chat_id] is None:
-        actions[chat_id] = action
-    else:
-        del actions[chat_id]
-        actions[chat_id] = action
+    actions[chat_id] = action
 
     with open(action_path, 'w') as writer:
         json.dump(actions, writer)

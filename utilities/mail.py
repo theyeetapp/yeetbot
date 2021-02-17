@@ -5,12 +5,12 @@ import os.path as path
 import requests
 import string
 
-def login(name, email, chat_id):
+def login(id, name, email, chat_id):
     characters = string.ascii_letters + string.digits
     code = ''.join(random.sample(characters, 10))
     mail_template_path = path.join(configuration.root, 'templates', 'verify.txt')
     with open(mail_template_path, 'r') as reader:
-        mail_string = reader.read().format(name.split(' ')[1], code)
+        mail_string = reader.read().format(code)
     
     config = configuration.get()
 
@@ -22,5 +22,5 @@ def login(name, email, chat_id):
     "subject": 'Verify your Telegram',
     "html": mail_string})
 
-    verify.set(chat_id, {"name":name, "email":email, "code":code})
+    verify.set(chat_id, {"id":id, "name":name, "email":email, "code":code})
     

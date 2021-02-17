@@ -14,3 +14,9 @@ def set(key, value):
     data[key] = value
     with open(verify_path, 'w') as writer:
         json.dump(data, writer)
+
+def delete(key):
+    data = get()
+    del data[key]
+    with open(verify_path, 'w') as writer:
+        json.dump(data, writer)

@@ -43,7 +43,7 @@
 						<tr>
 							<td>
 								<div style='line-height: 1.7; text-align:justify;'>
-									Hello {0}. <b>{1}</b> is your Telegram verification code. Send me this code and I will complete the process
+									Hey there. <b>{0}</b> is your Telegram verification code. Send me this code and I will complete the process
                                     of logging you in. I am very excited to help you keep track of your financial portfolio and investments.
                                     I trust we will have fun together.
 								</div>

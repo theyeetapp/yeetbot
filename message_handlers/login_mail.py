@@ -27,8 +27,8 @@ def login_mail(update, context):
         return context.bot.send_message(chat_id=chat_id, text=text)
     
     context.bot.send_chat_action(chat_id=chat_id, action=ChatAction.TYPING)
-    mail_login(user[1], user[2], chat_id)
+    mail_login(user[0], user[1], user[2], chat_id)
 
-    text = 'I just sent you an email. Follow the instructions there to complete this process.'
+    text = 'I just sent you an email with a verification code. Send me that code and I will log you in.'
     record_action(chat_id, 'login_email')
     return context.bot.send_message(chat_id=chat_id, text=text)

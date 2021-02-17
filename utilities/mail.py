@@ -5,7 +5,7 @@ import requests
 
 def verify(user, code):
     name = user[1].split(' ')[1]
-    mail_template_path = path.join(configuration.root, 'templates', 'verify.html')
+    mail_template_path = path.join(configuration.root, 'templates', 'verify.txt')
     with open(mail_template_path, 'r') as reader:
         mail_string = reader.read().format(name, code)
     

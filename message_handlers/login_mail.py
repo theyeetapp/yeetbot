@@ -1,5 +1,6 @@
 from utilities.mail import verify
 from random import randint, sample
+from utilities.actions import record as record_action
 import config
 import os.path as path
 import re
@@ -34,11 +35,11 @@ def login_mail(update, context):
     with open(verify_path, 'r') as reader:
         data = json.load(reader)
     
-    data[chat_id] = code
+    data[chat_id] = {"email":user[2], "code":code}
 
     with open(verify_path, 'w') as writer:
         json.dump(data, writer)
 
     text = 'I just sent you an email. Follow the instructions there to complete this process.'
-
+    record_action(chat_id, 'login_email')
     return context.bot.send_message(chat_id=chat_id, text=text)

@@ -1,6 +1,7 @@
 from telegram import ParseMode
 from utilities.actions import record as record_action
 import os
+import json
 import random
 import config
 
@@ -14,4 +15,10 @@ def start_handler(update, context):
         start_message = greeting + reader.read().format(app_url, app_url, app_url + 'signup')
 
     context.bot.send_message(chat_id=chat_id, text=start_message, parse_mode=ParseMode.HTML)
-    record_action(chat_id, 'start')
+
+    verify_path = os.path.join(config.root, 'data', 'verify.json')
+    with open(verify_path, 'r') as reader:
+        data = json.load(reader)
+
+    if data[chat_id] is None:
+        record_action(chat_id, 'start')

@@ -1,11 +1,10 @@
-from utilities.mail import verify
-from random import randint, sample
+from telegram import ChatAction
+from utilities.mail import login as mail_login
+from random import randint
 from utilities.actions import record as record_action
 import config
 import os.path as path
 import re
-import json
-import string
 
 def login_mail(update, context):
     chat_id = str(update.effective_chat.id)
@@ -27,18 +26,8 @@ def login_mail(update, context):
     if user is None:
         return context.bot.send_message(chat_id=chat_id, text=text)
     
-    characters = string.ascii_letters + string.digits
-    code = ''.join(sample(characters, 10))
-    verify(user, code)
-
-    verify_path = path.join(config.root, 'data', 'verify.json')
-    with open(verify_path, 'r') as reader:
-        data = json.load(reader)
-    
-    data[chat_id] = {"email":user[2], "code":code}
-
-    with open(verify_path, 'w') as writer:
-        json.dump(data, writer)
+    context.bot.send_chat_action(chat_id=chat_id, action=ChatAction.TYPING)
+    mail_login(user[1], user[2], chat_id)
 
     text = 'I just sent you an email. Follow the instructions there to complete this process.'
     record_action(chat_id, 'login_email')

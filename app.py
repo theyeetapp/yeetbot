@@ -2,8 +2,10 @@ from telegram import ParseMode
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 from command_handlers.start import start_handler
 from command_handlers.login import login_handler
+from command_handlers.list import list_handler
 from message_handlers.message import message_handler
 from message_handlers.unknown import unknown_handler
+from middlewares.auth import authenticated
 import logging
 import config
 
@@ -23,6 +25,10 @@ def start(update, context):
 def login(update, context):
     login_handler(update, context)
 
+@authenticated
+def list_all(update, context):
+    list_handler(update, context)
+
 def message(update, context):
     message_handler(update, context)
 
@@ -31,11 +37,13 @@ def unknown(update, context):
 
 start_command_handler = CommandHandler('start', start)
 login_command_handler = CommandHandler('login', login)
+list_command_handler = CommandHandler('list', list_all)
 message_command_handler = MessageHandler(Filters.text, message)
 unknown_command_handler = MessageHandler(Filters.all, unknown)
 
 dispatcher.add_handler(start_command_handler)
 dispatcher.add_handler(login_command_handler)
+dispatcher.add_handler(list_command_handler)
 dispatcher.add_handler(message_command_handler)
 dispatcher.add_handler(unknown_command_handler)
 

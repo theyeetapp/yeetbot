@@ -40,7 +40,14 @@ def login_complete(update, context):
         text = reader.read().format(name.split(' ')[1], count[0])
     
     record_action(chat_id, 'login_complete')
+    update_user(chat_id, user_id)
     return context.bot.send_message(chat_id=chat_id, text=text)
+
+def update_user(chat_id, user_id):
+    db = config.get()['db']
+    cursor = db.cursor()
+    query = 'UPDATE users SET telegram_id="{0}" WHERE id="{1}"'.format(chat_id, user_id)
+    cursor.execute(query)
     
     
     

@@ -18,7 +18,7 @@ def login_complete(update, context):
     if message == 'resend':
         context.bot.send_chat_action(chat_id=chat_id, action=ChatAction.TYPING)
         mail_login(user_id, name, email, chat_id)
-        text = 'I just resent the email. Get the orrect code and send it to me.'
+        text = 'I just resent the email. Get the correct code and send it to me.'
         return context.bot.send_message(chat_id=chat_id, text=text)
 
     if verify_data["code"] != message:

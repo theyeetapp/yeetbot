@@ -6,8 +6,7 @@ import requests
 import string
 
 def login(id, name, email, chat_id):
-    characters = string.ascii_letters + string.digits
-    code = ''.join(random.sample(characters, 10))
+    code = ''.join(random.sample(string.digits, 6))
     mail_template_path = path.join(configuration.root, 'templates', 'verify.txt')
     with open(mail_template_path, 'r') as reader:
         mail_string = reader.read().format(code)

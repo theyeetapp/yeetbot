@@ -1,4 +1,5 @@
 from telegram import ChatAction
+from utilities.actions import record as record_action
 import utilities.users as users
 import config
 
@@ -12,9 +13,10 @@ def list_handler(update, context):
     query = 'SELECT symbol_id from subscriptions WHERE user_id="{0}"'.format(user['id'])
     cursor.execute(query)
     symbol_ids = cursor.fetchall()
+    record_action(chat_id, 'list')
 
     if len(symbol_ids) == 0:
-        text = 'You are not subscribed to any stocks or crypto {0}'.format(name)
+        text = 'You are not subscribed to any stocks or cryptocurrencies {0}'.format(name)
         return context.bot.send_message(chat_id=chat_id, text=text)
 
     symbol_ids = ','.join(list(map(get_symbol_id, symbol_ids)))

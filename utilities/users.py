@@ -13,4 +13,10 @@ def set(key, value):
     data = get()
     data[key] = value
     with open(users_path, 'w') as writer:
+        json.dump(data, writer) 
+
+def delete(key):
+    data = get()
+    del data[key]
+    with open(users_path, 'w') as writer:
         json.dump(data, writer)

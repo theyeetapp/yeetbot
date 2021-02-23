@@ -1,6 +1,8 @@
 from config import root
 from message_handlers.login_mail import login_mail
 from message_handlers.login_complete import login_complete
+from message_handlers.update_mail import update_mail
+from message_handlers.update_complete import update_complete
 from message_handlers.unknown import unknown_handler
 import os.path as path
 import json
@@ -21,5 +23,11 @@ def message_handler(update, context):
 
     if action == 'login_email':
         return login_complete(update, context)
+
+    if action == 'update':
+        return update_mail(update, context)
+
+    if action == 'update_email':
+        return update_complete(update, context)
 
     return unknown_handler(update, context)

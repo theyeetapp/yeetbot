@@ -9,6 +9,8 @@ from command_handlers.update import update_handler
 from message_handlers.message import message_handler
 from message_handlers.unknown import unknown_handler
 from middlewares.auth import authenticated
+from jobs.update_stocks import update_stocks
+from jobs.update_crypto import update_crypto
 import logging
 import config
 
@@ -21,6 +23,7 @@ config.set()
 bot_token = config.get()['bot_token']
 updater = Updater(token=bot_token, use_context=True)
 dispatcher = updater.dispatcher
+job = updater.job_queue
 
 def start(update, context):
     start_handler(update, context)
@@ -49,6 +52,9 @@ def message(update, context):
 def unknown(update, context):
     unknown_handler(update, context)
 
+# job.run_once(update_stocks, 5)
+job.run_once(update_crypto, 5)
+
 start_command_handler = CommandHandler('start', start)
 login_command_handler = CommandHandler('login', login)
 list_command_handler = CommandHandler('list', list_all)
@@ -68,4 +74,4 @@ dispatcher.add_handler(message_command_handler)
 dispatcher.add_handler(unknown_command_handler)
 
 updater.start_polling()
-updater.idle();
+updater.idle()

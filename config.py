@@ -22,9 +22,13 @@ def get():
     mail_api_key = os.environ.get('MAIL_API_KEY')
     mail_from = os.environ.get('MAIL_FROM')
     mail_from_url = os.environ.get('MAIL_FROM_URL')
+    stocks_api_endpoint = os.environ.get('STOCKS_API_ENDPOINT')
+    stocks_api_key = os.environ.get('STOCKS_API_KEY')
+    crypto_api_endpoint = os.environ.get('CRYPTO_API_ENDPOINT')
 
     return {"bot_token":bot_token, "app_url":app_url, "mail_base_url":mail_base_url, "mail_api_key":mail_api_key, "mail_from":mail_from,
-    "mail_from_url":mail_from_url, "db":mydb};
+    "mail_from_url":mail_from_url, "db":mydb, "stocks_api_endpoint": stocks_api_endpoint, "stocks_api_key": stocks_api_key,
+    "crypto_api_endpoint":crypto_api_endpoint}
 
 
 

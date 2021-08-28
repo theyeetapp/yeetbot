@@ -8,7 +8,7 @@ from command_handlers.list_stocks import list_stocks_handler
 from command_handlers.update import update_handler
 from message_handlers.message import message_handler
 from message_handlers.unknown import unknown_handler
-from middlewares.auth import authenticated
+from middlewares.auth import authenticated, guest
 from jobs.update_stocks import update_stocks
 from jobs.update_crypto import update_crypto
 import logging
@@ -32,6 +32,7 @@ def start(update, context):
     start_handler(update, context)
 
 
+@guest
 def login(update, context):
     login_handler(update, context)
 

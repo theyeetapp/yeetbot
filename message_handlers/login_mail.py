@@ -8,7 +8,8 @@ import random
 import string
 import re
 
-prefixes = ['Hmm,', 'Sorry,', 'I am sorry,', "I'm sorry,"]
+prefixes = ["Hmm,", "Sorry,", "I am sorry,", "I'm sorry,"]
+
 
 def login_mail(update, context):
     chat_id = str(update.effective_chat.id)
@@ -30,15 +31,16 @@ def login_mail(update, context):
     except Exception as error:
         return send_error_response(context, chat_id, error)
 
-    if response.get('errorId'):
+    if response.get("errorId"):
         prefix = prefixes[random.randint(0, len(prefixes) - 1)]
-        text = prefix + ' I cannot find any Yeet user with that email address'
+        text = prefix + " I cannot find any Yeet user with that email address"
         return context.bot.send_message(chat_id=chat_id, text=text)
 
     user = response.get("user")
-    verify.set(chat_id, {"id": user['id'], "name": user['name'], "email": user['email'], "code": code})
+    verify.set(
+        chat_id,
+        {"id": user["id"], "name": user["name"], "email": user["email"], "code": code},
+    )
     text = "I just sent you an email with a verification code. Send me that code and I will log you in."
     record_action(chat_id, "login_email")
     return context.bot.send_message(chat_id=chat_id, text=text)
-
-

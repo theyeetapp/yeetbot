@@ -42,5 +42,5 @@ def get():
         "stocks_api_endpoint": stocks_api_endpoint,
         "stocks_api_key": stocks_api_key,
         "crypto_api_endpoint": crypto_api_endpoint,
-        "yeet_api_url": yeet_api_url
+        "yeet_api_url": yeet_api_url,
     }

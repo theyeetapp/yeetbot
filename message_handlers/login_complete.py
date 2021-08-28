@@ -10,6 +10,7 @@ import random
 import string
 import os.path as path
 
+
 def login_complete(update, context):
     chat_id = str(update.effective_chat.id)
     message = update.message.text
@@ -32,7 +33,15 @@ def login_complete(update, context):
             return send_error_response(context, chat_id, error)
 
         user = response.get("user")
-        verify.set(chat_id, {"id": user['id'], "name": user['name'], "email": user['email'], "code": code})
+        verify.set(
+            chat_id,
+            {
+                "id": user["id"],
+                "name": user["name"],
+                "email": user["email"],
+                "code": code,
+            },
+        )
         text = "I just resent the email. Get the correct code and send it to me."
         return context.bot.send_message(chat_id=chat_id, text=text)
 
@@ -56,7 +65,6 @@ def login_complete(update, context):
         return send_error_response(context, chat_id, error)
     except Exception as error:
         return send_error_response(context, chat_id, error)
-    
+
     record_action(chat_id, "login_complete")
     return context.bot.send_message(chat_id=chat_id, text=text)
-

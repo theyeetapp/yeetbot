@@ -1,34 +1,44 @@
 from telegram import ChatAction
-from utilities.mail import login as mail_login
-from random import randint
 from utilities.actions import record as record_action
-import config
-import os.path as path
+from utilities.api import authenticate
+from utilities.error import send_error_response
+from requests.exceptions import HTTPError
+import utilities.verify as verify
+import random
+import string
 import re
+
+prefixes = ['Hmm,', 'Sorry,', 'I am sorry,', "I'm sorry,"]
 
 def login_mail(update, context):
     chat_id = str(update.effective_chat.id)
-    email_regex = '^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w{2,3}$'
-    email = update.message.text
+    email_regex = "^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w{2,3}$"
+    email = update.message.text.lower()
 
     if re.match(email_regex, email) is None:
-        return context.bot.send_message(chat_id=chat_id, text=email + ' is not a valid email address')
-        
-    db = config.get()['db']
-    cursor = db.cursor()
-    query = 'SELECT * FROM users WHERE email="{0}"'.format(email)
-    cursor.execute(query)
-    user = cursor.fetchone()
-    prefixes = ['Hmm,', 'Sorry,', 'I am sorry,', "I'm sorry,"]
-    prefix = prefixes[randint(0, len(prefixes) - 1)]
-    text = prefix + ' I cannot find any Yeet user with that email address'
+        return context.bot.send_message(
+            chat_id=chat_id, text=email + " is not a valid email address"
+        )
 
-    if user is None:
-        return context.bot.send_message(chat_id=chat_id, text=text)
-    
     context.bot.send_chat_action(chat_id=chat_id, action=ChatAction.TYPING)
-    mail_login(user[0], user[1], user[2], chat_id)
+    code = "".join(random.sample(string.digits, 6))
 
-    text = 'I just sent you an email with a verification code. Send me that code and I will log you in.'
-    record_action(chat_id, 'login_email')
+    try:
+        response = authenticate(email, code)
+    except HTTPError as error:
+        return send_error_response(context, chat_id, error)
+    except Exception as error:
+        return send_error_response(context, chat_id, error)
+
+    if response.get('errorId'):
+        prefix = prefixes[random.randint(0, len(prefixes) - 1)]
+        text = prefix + ' I cannot find any Yeet user with that email address'
+        return context.bot.send_message(chat_id=chat_id, text=text)
+
+    user = response.get("user")
+    verify.set(chat_id, {"id": user['id'], "name": user['name'], "email": user['email'], "code": code})
+    text = "I just sent you an email with a verification code. Send me that code and I will log you in."
+    record_action(chat_id, "login_email")
     return context.bot.send_message(chat_id=chat_id, text=text)
+
+

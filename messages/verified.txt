@@ -1,6 +1,6 @@
 Nice to meet you {0}. So nice to finally put a name to this conversation.
 
-You are all set up and ready to go. Every night at 8:00PM GMT +1 I will message you with trading prices of the {1}
+You are all set up and ready to go. Every night at 8:00PM GMT +1 I will message you with trading prices of the various
 stocks and cryptocurrencies you are subscribed to on Yeet.
 
 As a quick reminder, here is a list of my other commands

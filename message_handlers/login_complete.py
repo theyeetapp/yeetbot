@@ -1,9 +1,13 @@
 from telegram import ChatAction
 from utilities.actions import record as record_action
-from utilities.mail import login as mail_login
+from utilities.api import authenticate, count_subscriptions, update_yeet_user
+from utilities.error import send_error_response
 import utilities.verify as verify
 import utilities.users as users
+from requests.exceptions import HTTPError
 import config
+import random
+import string
 import os.path as path
 
 def login_complete(update, context):
@@ -15,39 +19,44 @@ def login_complete(update, context):
     name = verify_data["name"]
     email = verify_data["email"]
 
-    if message == 'resend':
+    context.bot.send_chat_action(chat_id=chat_id, action=ChatAction.TYPING)
+
+    if message == "resend":
+        code = "".join(random.sample(string.digits, 6))
         context.bot.send_chat_action(chat_id=chat_id, action=ChatAction.TYPING)
-        mail_login(user_id, name, email, chat_id)
-        text = 'I just resent the email. Get the correct code and send it to me.'
+        try:
+            response = authenticate(email, code)
+        except HTTPError as error:
+            return send_error_response(context, chat_id, error)
+        except Exception as error:
+            return send_error_response(context, chat_id, error)
+
+        user = response.get("user")
+        verify.set(chat_id, {"id": user['id'], "name": user['name'], "email": user['email'], "code": code})
+        text = "I just resent the email. Get the correct code and send it to me."
         return context.bot.send_message(chat_id=chat_id, text=text)
 
     if verify_data["code"] != message:
-        text = '{0} is not the correct code. I\'ll need you to retype it. Type resend if you want me to send the email again.'.format(message)
+        text = "{0} is not the correct code. I'll need you to retype it. Type resend if you want me to send the email again.".format(
+            message
+        )
         return context.bot.send_message(chat_id=chat_id, text=text)
-    
-    del verify_data['code']
+
+    del verify_data["code"]
     users.set(chat_id, verify_data)
     verify.delete(chat_id)
 
-    db = config.get()['db']
-    cursor = db.cursor()
-    query = 'SELECT count(*) FROM subscriptions WHERE user_id="{0}"'.format(user_id)
-    cursor.execute(query)
-    count = cursor.fetchone()
+    message_path = path.join(config.root, "messages", "verified.txt")
+    with open(message_path, "r") as reader:
+        text = reader.read().format(name.split(" ")[1])
 
-    message_path = path.join(config.root, 'messages', 'verified.txt')
-    with open(message_path, 'r') as reader:
-        text = reader.read().format(name.split(' ')[1], count[0])
+    try:
+        update_yeet_user(user_id, chat_id)
+    except HTTPError as error:
+        return send_error_response(context, chat_id, error)
+    except Exception as error:
+        return send_error_response(context, chat_id, error)
     
-    record_action(chat_id, 'login_complete')
-    update_user(chat_id, user_id)
+    record_action(chat_id, "login_complete")
     return context.bot.send_message(chat_id=chat_id, text=text)
 
-def update_user(chat_id, user_id):
-    db = config.get()['db']
-    cursor = db.cursor()
-    query = 'UPDATE users SET telegram_id="{0}" WHERE id="{1}"'.format(chat_id, user_id)
-    cursor.execute(query)
-    
-    
-    

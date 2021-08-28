@@ -15,52 +15,63 @@ import logging
 import config
 
 # Enable logging of errors
-logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
+logging.basicConfig(
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
+)
 
 # loading up all relevant variables into environment
 config.set()
 
-bot_token = config.get()['bot_token']
+bot_token = config.get()["bot_token"]
 updater = Updater(token=bot_token, use_context=True)
 dispatcher = updater.dispatcher
 job = updater.job_queue
 
+
 def start(update, context):
     start_handler(update, context)
 
+
 def login(update, context):
     login_handler(update, context)
+
 
 @authenticated
 def list_all(update, context):
     list_handler(update, context)
 
-@authenticated  
+
+@authenticated
 def list_stocks(update, context):
     list_stocks_handler(update, context)
 
-@authenticated  
+
+@authenticated
 def list_crypto(update, context):
     list_crypto_handler(update, context)
+
 
 def update(update, context):
     update_handler(update, context)
 
+
 def message(update, context):
     message_handler(update, context)
+
 
 def unknown(update, context):
     unknown_handler(update, context)
 
+
 # job.run_once(update_stocks, 5)
 job.run_once(update_crypto, 5)
 
-start_command_handler = CommandHandler('start', start)
-login_command_handler = CommandHandler('login', login)
-list_command_handler = CommandHandler('list', list_all)
-list_stocks_command_handler = CommandHandler('liststocks', list_stocks)
-list_crypto_command_handler = CommandHandler('listcrypto', list_crypto)
-update_command_handler = CommandHandler('update', update)
+start_command_handler = CommandHandler("start", start)
+login_command_handler = CommandHandler("login", login)
+list_command_handler = CommandHandler("list", list_all)
+list_stocks_command_handler = CommandHandler("liststocks", list_stocks)
+list_crypto_command_handler = CommandHandler("listcrypto", list_crypto)
+update_command_handler = CommandHandler("update", update)
 message_command_handler = MessageHandler(Filters.text, message)
 unknown_command_handler = MessageHandler(Filters.all, unknown)
 

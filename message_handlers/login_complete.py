@@ -1,6 +1,6 @@
 from telegram import ChatAction
 from utilities.actions import record as record_action
-from utilities.api import authenticate, count_subscriptions, update_yeet_user
+from utilities.api import authenticate, update_yeet_user
 from utilities.error import send_error_response
 import utilities.verify as verify
 import utilities.users as users

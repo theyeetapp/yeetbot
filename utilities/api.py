@@ -10,19 +10,17 @@ def authenticate(email, code):
     response.raise_for_status()
     return response.json()
 
-
-def count_subscriptions(id):
+def update_yeet_user(yeet_id, telegram_id):
     api_url = config.get().get("yeet_api_url")
-    url = api_url + "users/{0}/subscriptions/count"
-    response = requests.get(url)
+    url = api_url + "users/{0}/telegram".format(yeet_id)
+    data = {"telegram_id": telegram_id}
+    response = requests.post(url, data=data)
     response.raise_for_status()
     return response.json()
 
-
-def update_yeet_user(yeet_id, telegram_id):
+def fetch_symbols(yeet_id, type=None):
     api_url = config.get().get("yeet_api_url")
-    url = api_url + "users/{0}/telegram/update".format(yeet_id)
-    data = {"telegram_id": telegram_id}
-    response = requests.post(url, data=data)
+    url = api_url + ("users/{0}/symbols".format(yeet_id) if not type else "users/{0}/symbols/{1}".format(yeet_id, type))
+    response = requests.get(url)
     response.raise_for_status()
     return response.json()

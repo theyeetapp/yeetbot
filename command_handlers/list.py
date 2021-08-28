@@ -19,6 +19,7 @@ def list_handler(update, context):
     except Exception as error:
         return send_error_response(context, chat_id, error)
 
+    record_action(chat_id, "list")
     symbols = response.get("symbols")
     symbols = list(
         map(

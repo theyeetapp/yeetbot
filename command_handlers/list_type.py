@@ -21,6 +21,9 @@ def list_type(update, context, type):
     except Exception as error:
         return send_error_response(context, chat_id, error)
 
+    action = "list_stocks" if type == "stock" else "list_crypto"
+    record_action(chat_id, action)
+    
     symbols = response.get("symbols")
     symbols = list(
         map(

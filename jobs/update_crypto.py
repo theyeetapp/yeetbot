@@ -1,18 +1,30 @@
 from requests.exceptions import HTTPError
 from utilities.crypto import record as record_crypto
+from utilities.api import fetch_symbols
+from requests.exceptions import HTTPError
 import requests
 import config
 
 
 def update_crypto(context):
     api_endpoint = config.get().get("crypto_api_endpoint")
-    crypto = fetch_formatted_crypto()
+
+    try:
+        response = fetch_symbols('crypto')
+    except HTTPError as error:
+        print(error)
+    except Exception as error:
+        print(error)
+
+    symbols = response.get('symbols')
+    symbols = ','.join(list(map(lambda symbol: symbol['company'], symbols)))
+    print(symbols)
 
     try:
         response = requests.get(
             api_endpoint,
             params={
-                "ids": crypto,
+                "ids": symbols,
                 "vs_currencies": "usd",
                 "include_market_cap": "true",
                 "include_24hr_vol": "true",
@@ -20,17 +32,11 @@ def update_crypto(context):
             },
         )
         response.raise_for_status()
-        record_crypto(response.json())
     except HTTPError as http_err:
         print(http_err)
     except Exception as err:
         print(err)
+    
+    record_crypto(response.json())
 
 
-def fetch_formatted_crypto():
-    db = config.get().get("db")
-    cursor = db.cursor()
-    query = 'SELECT company FROM symbols WHERE type="crypto"'
-    cursor.execute(query)
-    crypto = cursor.fetchall()
-    return ",".join(list(map(lambda x: str(x[0]), crypto)))

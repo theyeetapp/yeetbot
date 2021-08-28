@@ -1,16 +1,23 @@
 from requests.exceptions import HTTPError
 from utilities.stocks import record as record_stocks
+from utilities.api import fetch_symbols
 import requests
 import config
-import os.path as path
 
 
 def update_stocks(context):
     config_dict = config.get()
     api_endpoint = config_dict.get("stocks_api_endpoint")
     api_key = config_dict.get("stocks_api_key")
-    symbols = fetch_formatted_stocks()
-    print(symbols)
+    try:
+        response = fetch_symbols('stock')
+    except HTTPError as error:
+        print(error)
+    except Exception as error:
+        print(error)
+    
+    symbols = response.get('symbols')
+    symbols = ','.join(list(map(lambda symbol: symbol['name'], symbols)))
     date_from = "2021-08-20"
     date_to = "2021-08-20"
 
@@ -49,16 +56,3 @@ def parse_stocks_response(response):
 
     record_stocks(recorded_data)
 
-
-def fetch_formatted_stocks():
-    config_dict = config.get()
-    db = config_dict.get("db")
-    cursor = db.cursor()
-    query = 'SELECT name FROM symbols WHERE type="stock"'
-    cursor.execute(query)
-    stocks = cursor.fetchall()
-    return ",".join(list(map(get_stock_name, stocks)))
-
-
-def get_stock_name(stock):
-    return str(stock[0])

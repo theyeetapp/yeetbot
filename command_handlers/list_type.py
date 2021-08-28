@@ -1,6 +1,6 @@
 from telegram import ChatAction
 from utilities.actions import record as record_action
-from utilities.api import fetch_symbols
+from utilities.api import fetch_subscriptions
 from utilities.error import send_error_response
 import utilities.users as users
 from requests.exceptions import HTTPError
@@ -15,7 +15,7 @@ def list_type(update, context, type):
     formatted_type = type + "s" if type == "stock" else "cryptocurrencies"
 
     try:
-        response = fetch_symbols(user["id"], type)
+        response = fetch_subscriptions(user["id"], type)
     except HTTPError as error:
         return send_error_response(context, chat_id, error)
     except Exception as error:

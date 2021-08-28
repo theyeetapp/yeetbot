@@ -1,6 +1,6 @@
 from telegram import ChatAction
 from utilities.actions import record as record_action
-from utilities.api import fetch_symbols
+from utilities.api import fetch_subscriptions
 from utilities.error import send_error_response
 import utilities.users as users
 from requests.exceptions import HTTPError
@@ -13,7 +13,7 @@ def list_handler(update, context):
     name = user["name"].split(" ")[1]
 
     try:
-        response = fetch_symbols(user["id"])
+        response = fetch_subscriptions(user["id"])
     except HTTPError as error:
         return send_error_response(context, chat_id, error)
     except Exception as error:

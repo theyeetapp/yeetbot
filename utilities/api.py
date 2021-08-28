@@ -10,6 +10,7 @@ def authenticate(email, code):
     response.raise_for_status()
     return response.json()
 
+
 def update_yeet_user(yeet_id, telegram_id):
     api_url = config.get().get("yeet_api_url")
     url = api_url + "users/{0}/telegram".format(yeet_id)
@@ -18,9 +19,14 @@ def update_yeet_user(yeet_id, telegram_id):
     response.raise_for_status()
     return response.json()
 
+
 def fetch_symbols(yeet_id, type=None):
     api_url = config.get().get("yeet_api_url")
-    url = api_url + ("users/{0}/symbols".format(yeet_id) if not type else "users/{0}/symbols/{1}".format(yeet_id, type))
+    url = api_url + (
+        "users/{0}/symbols".format(yeet_id)
+        if not type
+        else "users/{0}/symbols/{1}".format(yeet_id, type)
+    )
     response = requests.get(url)
     response.raise_for_status()
     return response.json()

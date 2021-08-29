@@ -23,7 +23,7 @@ def list_type(update, context, type):
 
     action = "list_stocks" if type == "stock" else "list_crypto"
     record_action(chat_id, action)
-    
+
     symbols = response.get("symbols")
     symbols = list(
         map(

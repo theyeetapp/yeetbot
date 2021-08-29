@@ -11,6 +11,7 @@ from message_handlers.unknown import unknown_handler
 from middlewares.auth import authenticated, guest
 from jobs.update_stocks import update_stocks
 from jobs.update_crypto import update_crypto
+from jobs.send_reminders import send_reminders
 import logging
 import config
 
@@ -65,7 +66,7 @@ def unknown(update, context):
 
 
 # job.run_once(update_stocks, 5)
-job.run_once(update_crypto, 5)
+job.run_once(send_reminders, 5)
 
 start_command_handler = CommandHandler("start", start)
 login_command_handler = CommandHandler("login", login)

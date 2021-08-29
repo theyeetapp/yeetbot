@@ -10,15 +10,14 @@ def update_crypto(context):
     api_endpoint = config.get().get("crypto_api_endpoint")
 
     try:
-        response = fetch_symbols('crypto')
+        response = fetch_symbols("crypto")
     except HTTPError as error:
         print(error)
     except Exception as error:
         print(error)
 
-    symbols = response.get('symbols')
-    symbols = ','.join(list(map(lambda symbol: symbol['company'], symbols)))
-    print(symbols)
+    symbols = response.get("symbols")
+    symbols = ",".join(list(map(lambda symbol: symbol["company"], symbols)))
 
     try:
         response = requests.get(
@@ -36,7 +35,5 @@ def update_crypto(context):
         print(http_err)
     except Exception as err:
         print(err)
-    
+
     record_crypto(response.json())
-
-

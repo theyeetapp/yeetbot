@@ -10,14 +10,14 @@ def update_stocks(context):
     api_endpoint = config_dict.get("stocks_api_endpoint")
     api_key = config_dict.get("stocks_api_key")
     try:
-        response = fetch_symbols('stock')
+        response = fetch_symbols("stock")
     except HTTPError as error:
         print(error)
     except Exception as error:
         print(error)
-    
-    symbols = response.get('symbols')
-    symbols = ','.join(list(map(lambda symbol: symbol['name'], symbols)))
+
+    symbols = response.get("symbols")
+    symbols = ",".join(list(map(lambda symbol: symbol["name"], symbols)))
     date_from = "2021-08-20"
     date_to = "2021-08-20"
 
@@ -55,4 +55,3 @@ def parse_stocks_response(response):
         recorded_data[symbol] = recorded_content
 
     record_stocks(recorded_data)
-

@@ -31,6 +31,7 @@ def fetch_subscriptions(yeet_id, type=None):
     response.raise_for_status()
     return response.json()
 
+
 def fetch_symbols(type):
     api_url = config.get().get("yeet_api_url")
     url = api_url + "symbols/{0}".format(type)

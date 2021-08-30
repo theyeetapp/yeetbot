@@ -36,4 +36,20 @@ def update_crypto(context):
     except Exception as err:
         print(err)
 
-    record_crypto(response.json())
+    parse_crypto_response(response.json())
+
+
+def parse_crypto_response(response):
+    recorded_data = dict()
+
+    for symbol, data in response.items():
+        content = {
+            "price": "{:,}".format(round(data["usd"], 4)),
+            "market cap": "{:,}".format(round(data["usd_market_cap"], 4)),
+            "24hr volume": "{:,}".format(round(data["usd_24h_vol"], 4)),
+            "24hr change": "{:,}".format(round(data["usd_24h_change"], 4)),
+        }
+        recorded_data[symbol] = content
+
+    print(recorded_data)
+    record_crypto(recorded_data)

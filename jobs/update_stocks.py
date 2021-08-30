@@ -1,6 +1,7 @@
 from requests.exceptions import HTTPError
 from utilities.stocks import record as record_stocks
 from utilities.api import fetch_symbols
+from datetime import datetime
 import requests
 import config
 
@@ -19,8 +20,6 @@ def update_stocks(context):
     symbols = response.get("symbols")
     symbols = ",".join(list(map(lambda symbol: symbol["name"], symbols)))
     print(symbols)
-    date_from = "2021-08-20"
-    date_to = "2021-08-20"
 
     try:
         response = requests.get(
@@ -28,8 +27,8 @@ def update_stocks(context):
             params={
                 "access_key": api_key,
                 "symbols": symbols,
-                "date_from": date_from,
-                "date_to": date_to,
+                "date_from": get_date(),
+                "date_to": get_date(),
             },
         )
         response.raise_for_status()
@@ -47,13 +46,17 @@ def parse_stocks_response(response):
     for content in data:
         symbol = content["symbol"]
         recorded_content = {
-            "open": content["open"],
-            "high": content["high"],
-            "low": content["low"],
-            "close": content["close"],
-            "volume": content["volume"],
+            "open": str(content["open"]),
+            "high": str(content["high"]),
+            "low": str(content["low"]),
+            "close": str(content["close"]),
+            "volume": str(content["volume"]),
         }
         recorded_data[symbol] = recorded_content
 
     print(recorded_data)
     record_stocks(recorded_data)
+
+def get_date():
+    now = datetime.now()
+    return now.strftime("%Y-%m-%d")

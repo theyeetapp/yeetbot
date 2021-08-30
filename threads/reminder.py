@@ -1,18 +1,79 @@
 from utilities.api import fetch_subscriptions
+from utilities.stocks import get as get_stocks
+from utilities.crypto import get as get_crypto
+from datetime import datetime
 from requests.exceptions import HTTPError
 import threading
+import traceback
+import sys
 
 
 class Reminder(threading.Thread):
-    def __init__(self, data):
+    symbols = None
+
+    def __init__(self, name, data, context, chat_id):
         threading.Thread.__init__(self)
+        self.name = name
         self.data = data
+        self.context = context
+        self.chat_id = chat_id
 
     def run(self):
         try:
             response = fetch_subscriptions(self.data["id"])
-            print(response)
+            symbols = response.get("symbols")
+            self.symbols = list(
+                map(
+                    lambda symbol: {
+                        "name": symbol["name"],
+                        "company": symbol["company"],
+                        "type": symbol["type"],
+                    },
+                    symbols,
+                )
+            )
+            self.send()
         except HTTPError as error:
-            print(error)
+            traceback.print_exception(*sys.exc_info())
         except Exception as error:
-            print(error)
+            traceback.print_exception(*sys.exc_info())
+
+    def send(self):
+        name = self.data["name"].split(" ")[1]
+        text = "Hello {0}. Here is your roundup for today {1}\n\n{2}\n\n{3}".format(
+            name,
+            self.get_formatted_date(),
+            self.get_type_response("stock"),
+            self.get_type_response("crypto"),
+        )
+        return self.context.bot.send_message(chat_id=self.chat_id, text=text)
+
+    def get_type_response(self, type):
+        symbols = list(
+            map(
+                lambda symbol: symbol['name'] if type == 'stock' else symbol['company'],
+                filter(lambda symbol: symbol["type"] == type, self.symbols),
+            )
+        )
+        symbols_data = get_stocks() if type == "stock" else get_crypto()
+        message = "{0}\n".format("Stocks" if type == "stock" else "Cryptocurrencies")
+
+        for symbol in symbols:
+            data = symbols_data.get(symbol)
+            if data is not None:
+                text = "{0}\n".format(symbol)
+                for param, value in data.items():
+                    text += "{0} - {1}\n".format(param, str(value))
+                message += "{0}\n".format(text)
+
+        return message
+
+    def get_formatted_date(self):
+        now = datetime.now()
+        dt = int(now.strftime("%d"))
+        dt = (
+            str(dt) + "th"
+            if 11 <= dt <= 13
+            else str(dt) + {1: "st", 2: "nd", 3: "rd"}.get(dt % 10, "th")
+        )
+        return "{0}, {1} {2}".format(now.strftime("%A"), dt, now.strftime("%B, %Y"))

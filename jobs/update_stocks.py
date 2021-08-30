@@ -18,6 +18,7 @@ def update_stocks(context):
 
     symbols = response.get("symbols")
     symbols = ",".join(list(map(lambda symbol: symbol["name"], symbols)))
+    print(symbols)
     date_from = "2021-08-20"
     date_to = "2021-08-20"
 
@@ -54,4 +55,5 @@ def parse_stocks_response(response):
         }
         recorded_data[symbol] = recorded_content
 
+    print(recorded_data)
     record_stocks(recorded_data)

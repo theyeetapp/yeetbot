@@ -22,9 +22,9 @@ def update_mail(update, context):
         )
 
     context.bot.send_chat_action(chat_id=chat_id, action=ChatAction.TYPING)
-    code = "".join(sample(string.digits, 6))
 
     try:
+        code = "".join(sample(string.digits, 6))
         response = send_update_mail(email, code)
     except HTTPError as error:
         return send_error_response(context, chat_id, error)

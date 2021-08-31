@@ -1,9 +1,13 @@
 from telegram import ChatAction
-from utilities.mail import update as mail_update
 from utilities.actions import record as record_action
+from utilities.api import send_update_mail, update_yeet_user, get_yeet_user
+from utilities.error import send_error_response
 import utilities.verify as verify
 import utilities.users as users
+from requests.exceptions import HTTPError
 import config
+import random
+import string
 
 
 def update_complete(update, context):
@@ -16,9 +20,25 @@ def update_complete(update, context):
 
     if message == "resend":
         context.bot.send_chat_action(chat_id=chat_id, action=ChatAction.TYPING)
-        mail_update(user_id, name, email, chat_id)
-        text = "I just resent the email. Get the correct code and send it to me."
-        return context.bot.send_message(chat_id=chat_id, text=text)
+        code = "".join(random.sample(string.digits, 6))
+        try:
+            response = send_update_mail(email, code)
+            user = response.get("user")
+            verify.set(
+                chat_id,
+                {
+                    "id": user["id"],
+                    "name": user["name"],
+                    "email": user["email"],
+                    "code": code,
+                },
+            )
+            text = "I just resent the email. Get the correct code and send it to me."
+            return context.bot.send_message(chat_id=chat_id, text=text)
+        except HTTPError as error:
+            return send_error_response(context, chat_id, error)
+        except Exception as error:
+            return send_error_response(context, chat_id, error)
 
     if message != verify_data["code"]:
         text = "{0} is not the correct code. I'll need you to retype it. Type resend if you want me to send the email again.".format(
@@ -26,27 +46,23 @@ def update_complete(update, context):
         )
         return context.bot.send_message(chat_id=chat_id, text=text)
 
-    db = config.get()["db"]
-    cursor = db.cursor()
-    query = 'SELECT * FROM users WHERE email="{0}"'.format(email)
-    cursor.execute(query)
-    user = cursor.fetchone()
+    try:
+        response = get_yeet_user(user_id)
+        old_telegram_id = response.get("user").get("telegram_id")
+        update_yeet_user(user_id, chat_id)
+    except HTTPError as error:
+        return send_error_response(context, chat_id, error)
+    except Exception as error:
+        return send_error_response(context, chat_id, error)
+
     users_data = users.get()
-    user_data = users_data.get(str(user[6]))
-    users.delete(str(user[6]))
+    user_data = users_data.get(str(old_telegram_id))
+    users.delete(str(old_telegram_id))
     users.set(chat_id, user_data)
     verify.delete(chat_id)
 
-    update_user(chat_id, user_id)
     text = "I have updated your Telegram details {0}. From now on, this is the Telegram account I am associating you with.".format(
         name.split(" ")[1]
     )
     record_action(chat_id, "update_complete")
     context.bot.send_message(chat_id=chat_id, text=text)
-
-
-def update_user(chat_id, user_id):
-    db = config.get()["db"]
-    cursor = db.cursor()
-    query = 'UPDATE users SET telegram_id="{0}" WHERE id="{1}"'.format(chat_id, user_id)
-    cursor.execute(query)

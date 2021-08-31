@@ -38,3 +38,20 @@ def fetch_symbols(type):
     response = requests.get(url)
     response.raise_for_status()
     return response.json()
+
+
+def send_update_mail(email, code):
+    api_url = config.get().get("yeet_api_url")
+    url = api_url + "bot/update"
+    data = {"email": email, "code": code}
+    response = requests.post(url, data=data)
+    response.raise_for_status()
+    return response.json()
+
+
+def get_yeet_user(id):
+    api_url = config.get().get("yeet_api_url")
+    url = api_url + "users/{0}".format(id)
+    response = requests.get(url)
+    response.raise_for_status()
+    return response.json()

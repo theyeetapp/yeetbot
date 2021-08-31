@@ -57,6 +57,7 @@ def parse_stocks_response(response):
     print(recorded_data)
     record_stocks(recorded_data)
 
+
 def get_date():
     now = datetime.now()
     return now.strftime("%Y-%m-%d")

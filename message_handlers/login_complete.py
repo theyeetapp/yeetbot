@@ -4,11 +4,11 @@ from utilities.api import authenticate, update_yeet_user
 from utilities.error import send_error_response
 import utilities.verify as verify
 import utilities.users as users
-from requests.exceptions import HTTPError
 import config
 import random
 import string
 import os.path as path
+import sys
 
 
 def login_complete(update, context):
@@ -27,10 +27,9 @@ def login_complete(update, context):
         context.bot.send_chat_action(chat_id=chat_id, action=ChatAction.TYPING)
         try:
             response = authenticate(email, code)
-        except HTTPError as error:
-            return send_error_response(context, chat_id, error)
-        except Exception as error:
-            return send_error_response(context, chat_id, error)
+        except Exception:
+            exception = sys.exc_info()
+            return send_error_response(context, chat_id, exception)
 
         user = response.get("user")
         verify.set(
@@ -61,10 +60,9 @@ def login_complete(update, context):
 
     try:
         update_yeet_user(user_id, chat_id)
-    except HTTPError as error:
-        return send_error_response(context, chat_id, error)
-    except Exception as error:
-        return send_error_response(context, chat_id, error)
+    except Exception:
+        exception = sys.exc_info()
+        return send_error_response(context, chat_id, exception)
 
     record_action(chat_id, "login_complete")
     return context.bot.send_message(chat_id=chat_id, text=text)

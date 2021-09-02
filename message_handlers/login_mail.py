@@ -2,11 +2,11 @@ from telegram import ChatAction
 from utilities.actions import record as record_action
 from utilities.api import authenticate
 from utilities.error import send_error_response
-from requests.exceptions import HTTPError
 import utilities.verify as verify
 import random
 import string
 import re
+import sys
 
 prefixes = ["Hmm,", "Sorry,", "I am sorry,", "I'm sorry,"]
 
@@ -26,10 +26,9 @@ def login_mail(update, context):
 
     try:
         response = authenticate(email, code)
-    except HTTPError as error:
-        return send_error_response(context, chat_id, error)
-    except Exception as error:
-        return send_error_response(context, chat_id, error)
+    except Exception:
+        exception = sys.exc_info()
+        return send_error_response(context, chat_id, exception)
 
     if response.get("errorId"):
         prefix = prefixes[random.randint(0, len(prefixes) - 1)]

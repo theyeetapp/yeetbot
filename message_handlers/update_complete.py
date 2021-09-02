@@ -4,10 +4,9 @@ from utilities.api import send_update_mail, update_yeet_user, get_yeet_user
 from utilities.error import send_error_response
 import utilities.verify as verify
 import utilities.users as users
-from requests.exceptions import HTTPError
-import config
 import random
 import string
+import sys
 
 
 def update_complete(update, context):
@@ -35,10 +34,9 @@ def update_complete(update, context):
             )
             text = "I just resent the email. Get the correct code and send it to me."
             return context.bot.send_message(chat_id=chat_id, text=text)
-        except HTTPError as error:
-            return send_error_response(context, chat_id, error)
-        except Exception as error:
-            return send_error_response(context, chat_id, error)
+        except Exception:
+            exception = sys.exc_info()
+            return send_error_response(context, chat_id, exception)
 
     if message != verify_data["code"]:
         text = "{0} is not the correct code. I'll need you to retype it. Type resend if you want me to send the email again.".format(
@@ -50,10 +48,9 @@ def update_complete(update, context):
         response = get_yeet_user(user_id)
         old_telegram_id = response.get("user").get("telegram_id")
         update_yeet_user(user_id, chat_id)
-    except HTTPError as error:
-        return send_error_response(context, chat_id, error)
-    except Exception as error:
-        return send_error_response(context, chat_id, error)
+    except Exception:
+        exception = sys.exc_info()
+        return send_error_response(context, chat_id, exception)
 
     users_data = users.get()
     user_data = users_data.get(str(old_telegram_id))

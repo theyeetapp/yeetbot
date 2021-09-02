@@ -1,12 +1,12 @@
 from telegram import ChatAction
 from random import randint, sample
-from requests.exceptions import HTTPError
 from utilities.api import send_update_mail
 from utilities.actions import record as record_action
 from utilities.error import send_error_response
 import utilities.verify as verify
 import string
 import re
+import sys
 
 prefixes = ["Hmm,", "Sorry,", "I am sorry,", "I'm sorry,"]
 
@@ -26,10 +26,9 @@ def update_mail(update, context):
     try:
         code = "".join(sample(string.digits, 6))
         response = send_update_mail(email, code)
-    except HTTPError as error:
-        return send_error_response(context, chat_id, error)
-    except Exception as error:
-        return send_error_response(context, chat_id, error)
+    except Exception:
+        exception = sys.exc_info()
+        return send_error_response(context, chat_id, exception)
 
     if response.get("errorId") is not None:
         prefix = prefixes[randint(0, len(prefixes) - 1)]

@@ -8,7 +8,7 @@ def update_handler(update, context):
     if get_users().get(chat_id) is not None:
         text = "There is nothing to update. Use a different Telegram account."
         return context.bot.send_message(chat_id=chat_id, text=text)
-        
+
     text = "Cool. What is your Yeet email ?"
     record_action(chat_id, "update")
     context.bot.send_message(chat_id=chat_id, text=text)

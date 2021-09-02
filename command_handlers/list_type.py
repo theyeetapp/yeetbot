@@ -3,8 +3,7 @@ from utilities.actions import record as record_action
 from utilities.api import fetch_subscriptions
 from utilities.error import send_error_response
 import utilities.users as users
-from requests.exceptions import HTTPError
-import config
+import sys
 
 
 def list_type(update, context, type):
@@ -16,10 +15,9 @@ def list_type(update, context, type):
 
     try:
         response = fetch_subscriptions(user["id"], type)
-    except HTTPError as error:
-        return send_error_response(context, chat_id, error)
-    except Exception as error:
-        return send_error_response(context, chat_id, error)
+    except Exception:
+        exception = sys.exc_info()
+        return send_error_response(context, chat_id, exception)
 
     action = "list_stocks" if type == "stock" else "list_crypto"
     record_action(chat_id, action)

@@ -1,0 +1,25 @@
+from datetime import datetime
+import os.path as path
+import config
+import json
+
+logs_path = path.join(config.root, "data", "logs.json")
+
+
+def record(error):
+    with open(logs_path, "r") as reader:
+        data = json.load(reader)
+    new_logs = data.get("logs")
+    new_logs.insert(0, {get_timestamp(): error})
+    new_data = {"logs": new_logs}
+    set(new_data)
+
+
+def set(data):
+    with open(logs_path, "w") as writer:
+        json.dump(data, writer)
+
+
+def get_timestamp():
+    now = datetime.now()
+    return now.strftime("%Y-%m-%d %H:%M:%S")

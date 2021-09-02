@@ -1,9 +1,10 @@
-from requests.exceptions import HTTPError
 from utilities.stocks import record as record_stocks
 from utilities.api import fetch_symbols
-from datetime import datetime
+from utilities.error import send_error_response
+from datetime import datetime, timedelta
 import requests
 import config
+import sys
 
 
 def update_stocks(context):
@@ -12,14 +13,12 @@ def update_stocks(context):
     api_key = config_dict.get("stocks_api_key")
     try:
         response = fetch_symbols("stock")
-    except HTTPError as error:
-        print(error)
-    except Exception as error:
-        print(error)
+    except Exception:
+        exception = sys.exc_info()
+        return send_error_response(None, None, exception)
 
     symbols = response.get("symbols")
     symbols = ",".join(list(map(lambda symbol: symbol["name"], symbols)))
-    print(symbols)
 
     try:
         response = requests.get(
@@ -33,10 +32,9 @@ def update_stocks(context):
         )
         response.raise_for_status()
         parse_stocks_response(response.json())
-    except HTTPError as http_error:
-        print(http_error)
-    except Exception as error:
-        print(error)
+    except Exception:
+        exception = sys.exc_info()
+        return send_error_response(None, None, exception)
 
 
 def parse_stocks_response(response):
@@ -54,10 +52,9 @@ def parse_stocks_response(response):
         }
         recorded_data[symbol] = recorded_content
 
-    print(recorded_data)
     record_stocks(recorded_data)
 
 
 def get_date():
-    now = datetime.now()
-    return now.strftime("%Y-%m-%d")
+    dt = datetime.today() - timedelta(days=1)
+    return dt.strftime("%Y-%m-%d")

@@ -1,10 +1,9 @@
 from utilities.api import fetch_subscriptions
 from utilities.stocks import get as get_stocks
 from utilities.crypto import get as get_crypto
-from datetime import datetime
-from requests.exceptions import HTTPError
+from utilities.error import send_error_response
+from datetime import datetime, timedelta
 import threading
-import traceback
 import sys
 
 
@@ -33,14 +32,13 @@ class Reminder(threading.Thread):
                 )
             )
             self.send()
-        except HTTPError as error:
-            traceback.print_exception(*sys.exc_info())
-        except Exception as error:
-            traceback.print_exception(*sys.exc_info())
+        except Exception:
+            exception = sys.exc_info()
+            return send_error_response(None, None, exception)
 
     def send(self):
         name = self.data["name"].split(" ")[1]
-        text = "Hello {0}. Here is your roundup for today {1}. All values are in US dollars.\n\n{2}{3}".format(
+        text = "Hello {0}. Here is your roundup for {1}. All values are in US dollars.\n\n{2}{3}".format(
             name,
             self.get_formatted_date(),
             self.get_type_response("stock"),
@@ -65,11 +63,11 @@ class Reminder(threading.Thread):
         return message
 
     def get_formatted_date(self):
-        now = datetime.now()
-        dt = int(now.strftime("%d"))
+        date_object = datetime.today() - timedelta(days=1)
+        dt = int(date_object.strftime("%d"))
         dt = (
             str(dt) + "th"
             if 11 <= dt <= 13
             else str(dt) + {1: "st", 2: "nd", 3: "rd"}.get(dt % 10, "th")
         )
-        return "{0}, {1} {2}".format(now.strftime("%A"), dt, now.strftime("%B, %Y"))
+        return "{0}, {1} {2}".format(date_object.strftime("%A"), dt, date_object.strftime("%B, %Y"))

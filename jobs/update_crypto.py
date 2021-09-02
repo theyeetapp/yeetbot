@@ -1,9 +1,9 @@
-from requests.exceptions import HTTPError
 from utilities.crypto import record as record_crypto
 from utilities.api import fetch_symbols
-from requests.exceptions import HTTPError
+from utilities.error import send_error_response
 import requests
 import config
+import sys
 
 
 def update_crypto(context):
@@ -11,10 +11,9 @@ def update_crypto(context):
 
     try:
         response = fetch_symbols("crypto")
-    except HTTPError as error:
-        print(error)
-    except Exception as error:
-        print(error)
+    except Exception:
+        exception = sys.exc_info()
+        return send_error_response(None, None, exception)
 
     symbols = response.get("symbols")
     symbols = ",".join(list(map(lambda symbol: symbol["company"], symbols)))
@@ -31,10 +30,9 @@ def update_crypto(context):
             },
         )
         response.raise_for_status()
-    except HTTPError as http_err:
-        print(http_err)
-    except Exception as err:
-        print(err)
+    except Exception:
+        exception = sys.exc_info()
+        return send_error_response(None, None, exception)
 
     parse_crypto_response(response.json())
 

@@ -10,4 +10,6 @@ def send_error_response(context, chat_id, exception):
     }
     record_exception(parsed_exception)
     text = "I am sorry. I ran into an error trying to perform that operation"
-    return context.bot.send_message(chat_id=chat_id, text=text)
+
+    if context and chat_id:
+        return context.bot.send_message(chat_id=chat_id, text=text)

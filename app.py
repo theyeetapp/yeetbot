@@ -65,8 +65,8 @@ def unknown(update, context):
     unknown_handler(update, context)
 
 
-# job.run_once(update_stocks, 5)
-job.run_once(send_reminders, 5)
+job.run_once(update_crypto, 5)
+# job.run_once(send_reminders, 5)
 
 start_command_handler = CommandHandler("start", start)
 login_command_handler = CommandHandler("login", login)

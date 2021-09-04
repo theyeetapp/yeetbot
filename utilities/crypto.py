@@ -10,6 +10,12 @@ def record(data):
         json.dump(data, writer)
 
 
+def add(data):
+    crypto = get()
+    crypto.update(data)
+    record(crypto)
+
+
 def get():
     with open(crypto_path, "r") as reader:
         data = json.load(reader)

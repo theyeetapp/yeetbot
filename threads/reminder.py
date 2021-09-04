@@ -70,4 +70,6 @@ class Reminder(threading.Thread):
             if 11 <= dt <= 13
             else str(dt) + {1: "st", 2: "nd", 3: "rd"}.get(dt % 10, "th")
         )
-        return "{0}, {1} {2}".format(date_object.strftime("%A"), dt, date_object.strftime("%B, %Y"))
+        return "{0}, {1} {2}".format(
+            date_object.strftime("%A"), dt, date_object.strftime("%B, %Y")
+        )

@@ -10,6 +10,12 @@ def record(data):
         json.dump(data, writer)
 
 
+def add(data):
+    stocks = get()
+    stocks.update(data)
+    record(stocks)
+
+
 def get():
     with open(stocks_path, "r") as reader:
         data = json.load(reader)

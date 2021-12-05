@@ -2,7 +2,7 @@ import os.path as path
 import config
 import json
 
-stocks_path = path.join(config.root, "data", "stocks.json")
+stocks_path = path.join(config.root, "storage", "stocks.json")
 
 
 def record(data):

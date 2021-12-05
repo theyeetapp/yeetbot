@@ -4,7 +4,7 @@ import json
 
 
 def record(chat_id, action):
-    action_path = path.join(root, "data", "actions.json")
+    action_path = path.join(root, "storage", "actions.json")
     with open(action_path, "r") as reader:
         actions = json.load(reader)
 

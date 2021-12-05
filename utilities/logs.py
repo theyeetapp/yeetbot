@@ -3,7 +3,7 @@ import os.path as path
 import config
 import json
 
-logs_path = path.join(config.root, "data", "logs.json")
+logs_path = path.join(config.root, "storage", "logs.json")
 
 
 def record(error):

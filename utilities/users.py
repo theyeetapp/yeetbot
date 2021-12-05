@@ -2,7 +2,7 @@ import os.path as path
 import config
 import json
 
-users_path = path.join(config.root, "data", "users.json")
+users_path = path.join(config.root, "storage", "users.json")
 
 
 def get():

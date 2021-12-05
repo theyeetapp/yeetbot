@@ -8,5 +8,5 @@ venv
 # pycache
 __pycache__
 
-# data folder
-/data
+# storage folder
+/storage

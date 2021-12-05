@@ -2,7 +2,7 @@ import os.path as path
 import config
 import json
 
-crypto_path = path.join(config.root, "data", "crypto.json")
+crypto_path = path.join(config.root, "storage", "crypto.json")
 
 
 def record(data):

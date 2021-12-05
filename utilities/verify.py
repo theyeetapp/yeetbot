@@ -2,7 +2,7 @@ import os.path as path
 import config
 import json
 
-verify_path = path.join(config.root, "data", "verify.json")
+verify_path = path.join(config.root, "storage", "verify.json")
 
 
 def get():

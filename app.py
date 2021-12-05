@@ -23,7 +23,12 @@ logging.basicConfig(
 # loading up all relevant variables into environment
 config.set()
 
-bot_token = config.get()["bot_token"]
+app_config = config.get()
+bot_token = app_config.get("bot_token")
+bot_url = app_config.get("bot_url")
+bot_host = app_config.get("bot_host")
+bot_port = app_config.get("bot_port")
+
 updater = Updater(token=bot_token, use_context=True)
 dispatcher = updater.dispatcher
 job = updater.job_queue
@@ -65,7 +70,6 @@ def unknown(update, context):
     unknown_handler(update, context)
 
 
-job.run_once(update_stocks, 5)
 # job.run_once(send_reminders, 5)
 
 start_command_handler = CommandHandler("start", start)
@@ -86,5 +90,7 @@ dispatcher.add_handler(update_command_handler)
 dispatcher.add_handler(message_command_handler)
 dispatcher.add_handler(unknown_command_handler)
 
-updater.start_polling()
+updater.start_webhook(listen=bot_host, port=bot_port, url_path=bot_token)
+updater.bot.set_webhook(url=f"{bot_url}{bot_token}")
+
 updater.idle()

@@ -10,7 +10,7 @@ import json
 
 def message_handler(update, context):
     chat_id = str(update.effective_chat.id)
-    actions_path = path.join(root, "data", "actions.json")
+    actions_path = path.join(root, "storage", "actions.json")
     with open(actions_path, "r") as reader:
         actions = json.load(reader)
 

@@ -12,6 +12,7 @@ from middlewares.auth import authenticated, guest
 from jobs.update_stocks import update_stocks
 from jobs.update_crypto import update_crypto
 from jobs.send_reminders import send_reminders
+from datetime import time
 import logging
 import config
 
@@ -69,8 +70,9 @@ def message(update, context):
 def unknown(update, context):
     unknown_handler(update, context)
 
-
-# job.run_once(send_reminders, 5)
+job.run_daily(send_reminders, time=time(hour=7, minute=0))
+job.run_daily(update_stocks, time=time(hour=6, minute=30))
+job.run_daily(update_crypto, time=time(hour=6, minute=30))
 
 start_command_handler = CommandHandler("start", start)
 login_command_handler = CommandHandler("login", login)

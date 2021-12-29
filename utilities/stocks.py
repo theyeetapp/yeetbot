@@ -6,6 +6,7 @@ stocks_path = path.join(config.root, "storage", "stocks.json")
 
 
 def record(data):
+    print(data)
     with open(stocks_path, "w") as writer:
         json.dump(data, writer)
 

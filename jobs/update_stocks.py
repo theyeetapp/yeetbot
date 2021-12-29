@@ -43,7 +43,7 @@ def fetch_symbols(all_symbols):
         except Exception:
             exception = sys.exc_info()
             return send_error_response(None, None, exception)
-
+        print(response.json())
         parse_stocks_response(response.json(), i == 0)
         i += 50
 

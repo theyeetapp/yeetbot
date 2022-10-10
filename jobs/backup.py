@@ -12,8 +12,6 @@ def parse_dome_uuids():
 
     for file_uuid in file_uuids:
         (file, uuid) = file_uuid.split("//")
-        print(file)
-        print(uuid)
         parsed_dome_uuids[file] = uuid
 
     return parsed_dome_uuids
@@ -42,7 +40,6 @@ def backup(context):
                 headers=request_headers,
             )
             response.raise_for_status()
-            print(response)
         except Exception:
             exception = sys.exc_info()
             send_error_response(None, None, exception)

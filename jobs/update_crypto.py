@@ -53,7 +53,9 @@ def parse_crypto_response(response, record=True):
             "price": "{:,}".format(round(data["usd"], 4)),
             "market cap": "{:,}".format(round(data["usd_market_cap"], 4)),
             "24hr volume": "{:,}".format(round(data["usd_24h_vol"], 4)),
-            "24hr change": "{:,}".format(round(data["usd_24h_change"], 4)) if data["usd_24h_change"] else 0,
+            "24hr change": "{:,}".format(round(data["usd_24h_change"], 4))
+            if data["usd_24h_change"]
+            else 0,
         }
         recorded_data[symbol] = content
 

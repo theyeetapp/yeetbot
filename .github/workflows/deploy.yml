@@ -24,7 +24,7 @@ jobs:
           curl -X POST https://notify.olamileke.me \
             -H 'Authorization: Bearer ${{ secrets.NOTIFY_BEARER_TOKEN }}' \
             -H 'Content-Type: application/json' \
-            -d '{"service":"notify", "step":"BUILD_START"}' 
+            -d '{"service":"yeetbot", "step":"BUILD_START"}' 
           docker build -t ${{ secrets.DOCKERHUB_REPO }} .
       - name: Send out notification if application build is successful
         if: ${{ steps.build.conclusion == 'success' }}
@@ -32,7 +32,7 @@ jobs:
           curl -X POST https://notify.olamileke.me \
             -H 'Authorization: Bearer ${{ secrets.NOTIFY_BEARER_TOKEN }}' \
             -H 'Content-Type: application/json' \
-            -d '{"service":"notify", "step":"BUILD_COMPLETED"}'
+            -d '{"service":"yeetbot", "step":"BUILD_COMPLETED"}'
       - name: Login to the Dockerhub Container Registry
         if: ${{ success() }}
         run: echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
@@ -48,7 +48,7 @@ jobs:
           curl -X POST https://notify.olamileke.me \
             -H 'Authorization: Bearer ${{ secrets.NOTIFY_BEARER_TOKEN }}' \
             -H 'Content-Type: application/json' \
-            -d '{"service":"notify", "step":"IMAGE_PUSHED"}'
+            -d '{"service":"yeetbot", "step":"IMAGE_PUSHED"}'
       - name: Configure SSH
         if: ${{ success() }}
         run: |
@@ -72,11 +72,11 @@ jobs:
           curl -X POST https://notify.olamileke.me \
             -H 'Authorization: Bearer ${{ secrets.NOTIFY_BEARER_TOKEN }}' \
             -H 'Content-Type: application/json' \
-            -d '{"service":"notify", "step":"DEPLOYED"}'
+            -d '{"service":"yeetbot", "step":"DEPLOYED"}'
       - name: Send out notification if pipeline fails
         if: ${{ failure() }}
         run: |
           curl -X POST https://notify.olamileke.me \
             -H 'Authorization: Bearer ${{ secrets.NOTIFY_BEARER_TOKEN }}' \
             -H 'Content-Type: application/json' \
-            -d '{"service":"notify", "step":"FAILED"}'
+            -d '{"service":"yeetbot", "step":"FAILED"}'
